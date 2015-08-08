@@ -5,37 +5,58 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.util.Scanner;
 
+/**
+ * Простой сервачок на одну бошку
+ * @author Jane Dow
+ *
+ */
 public class Server {
+	ServerSocket server;
+	ObjectOutputStream output;
 	
-	public static void main(String[] args) {
-		ServerSocket server = null;
-		ObjectOutputStream output = null;
-		ObjectInputStream input = null;
+	public Server() throws IOException {
+		server = new ServerSocket(4040);
+		
+	}
+	
+	public void addMessage(String msg) {
+		System.out.println(msg);
+	}
+	
+	public void start() {
 		try {
-			server = new ServerSocket(4040);
+			Socket friend = server.accept();
+			output = new ObjectOutputStream(friend.getOutputStream());
 			
+			Scanner scan = new Scanner(System.in);
 			while(true) {
-				Socket sok = server.accept();
-				output = new ObjectOutputStream(sok.getOutputStream());
-				output.writeObject("fuckyou");
-				System.out.println("1 write!");
-				
-				input = new ObjectInputStream(sok.getInputStream());
-				String text = (String) input.readObject();
-				
-				System.out.println(text);
+				String sendMsg = scan.nextLine();
+				output.writeObject(sendMsg);			
 			}
-		} catch (Exception e) {
+		} catch (IOException e) {
 			e.printStackTrace();
 		} finally {
 			try {
 				server.close();
-				input.close();
 				output.close();
 			} catch (IOException e) {
+				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
+		}
+		
+	}
+	
+	public static void main(String[] args) {
+		Server it;
+		try {
+			it = new Server();
+			System.out.println("starting server");
+			it.start();
+		} catch (IOException e) {
+			e.printStackTrace();
 		}
 	}
 }
