@@ -13,13 +13,14 @@ public class Broadcaster extends Thread {
 	private List<Resender> clients = new ArrayList<Resender>(); 
 	
 	
-	public Broadcaster() {
-
-	}
-	
 	public void run() {
 		while(true) {
 			for(Resender client: clients) {
+				if(client!=null && client.isStop()) {
+					System.out.println("Удаляем отключившегося клиента");
+					clients.remove(client);
+					break;
+				}
 				if(client!= null && client.isNewMsg()){
 					broadcast(client.getMsg(), client);
 				}
@@ -27,6 +28,10 @@ public class Broadcaster extends Thread {
 		}
 	}
 	
+	/**
+	 * Добавляем нового клиента
+	 * @param s
+	 */
 	public void add(Socket s) {
 		try {
 			Resender client = new Resender(new ObjectInputStream(s.getInputStream()), new ObjectOutputStream(s.getOutputStream()));
