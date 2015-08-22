@@ -1,6 +1,9 @@
 package ru.coutvv.simplechat.data;
 
-public class Message {
+import java.io.Serializable;
+
+@SuppressWarnings("serial")
+public class Message implements Serializable {
 	public static final int TYPE_LOGIN = 0;
 	public static final int TYPE_LOGOUT = 1;
 	public static final int TYPE_MESSAGE = 2;
@@ -33,5 +36,15 @@ public class Message {
 
 	public String getMsg() {
 		return msg;
+	}
+	
+	public String toString() {
+		if(this.type == TYPE_MESSAGE){ 
+			return author + ": " + msg;
+		}else if(this.type == TYPE_LOGIN){
+			return msg + " присоединился к чату";
+		} else {
+			return msg + " ушёл из чата";
+		} 
 	}
 }
