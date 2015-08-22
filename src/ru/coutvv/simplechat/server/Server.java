@@ -1,14 +1,11 @@
 package ru.coutvv.simplechat.server;
 
 import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.util.Scanner;
 
 /**
- * Простой сервачок на одну бошку
+ * сервер, ловит клиентов, мэйн тут
  * @author Jane Dow
  *
  */
@@ -25,7 +22,6 @@ public class Server {
 
 	
 	public void start() {
-		ClientConnection msgWriter = null;
 		try {
 			Broadcaster broadcaster = new Broadcaster();
 			broadcaster.start();
@@ -41,7 +37,6 @@ public class Server {
 			e.printStackTrace();
 		} finally {
 			try {
-				msgWriter.stopIt();
 				server.close();
 			} catch (IOException e) {
 				e.printStackTrace();
