@@ -16,6 +16,16 @@ public class ClientConnection extends Thread {
 	private ObjectOutputStream output;
 	private boolean stop = false;
 	
+	private String clientName = "Anon";
+	
+	public String getClientName(){
+		return clientName;
+	}
+	
+	public void setClientName(String name) {
+		this.clientName = name;
+	}
+	
 	public void stopIt() {
 		stop = true;
 	}
