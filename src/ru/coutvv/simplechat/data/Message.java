@@ -7,14 +7,24 @@ public class Message {
 	
 	private int type = TYPE_MESSAGE;
 	private String msg = "";
+	private String author = "Anon";
 	
 	public Message(String msg){
 		this.msg = msg;
 	}
 	
 	public Message(String msg, int type) {
-		this.msg = msg;
+		this(msg);
 		this.type = type;
+	}
+	
+	public Message(String msg, int type, String author){
+		this(msg,type);
+		this.author = author;
+	}
+	
+	public String getAuthor(){
+		return author;
 	}
 
 	public int getType() {
