@@ -3,6 +3,8 @@ package ru.coutvv.simplechat.client;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 
+import ru.coutvv.simplechat.data.Message;
+
 public class Agent extends Thread {
 	private ObjectInputStream input;
 	private boolean stop = false;
@@ -18,7 +20,7 @@ public class Agent extends Thread {
 	public void run() {
 		while(!stop){
 			try {
-				String s = (String) input.readObject();
+				Message s = (Message) input.readObject();
 				System.out.println(s);
 			} catch (Exception e) {
 				e.printStackTrace();
