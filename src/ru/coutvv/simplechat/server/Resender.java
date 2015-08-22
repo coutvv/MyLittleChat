@@ -6,8 +6,7 @@ import java.io.ObjectOutputStream;
 
 
 /**
- * Класс пишущий в консоль то, что получает с клиента
- * @author Jane Dow
+ * Класс который является носителем инаутов клиентов
  *
  */
 public class Resender extends Thread {
@@ -17,6 +16,10 @@ public class Resender extends Thread {
 	
 	public void stopIt() {
 		stop = true;
+	}
+	
+	public boolean isStop(){
+		return stop;
 	}
 	
 	public Resender(ObjectInputStream in, ObjectOutputStream out) {
@@ -31,7 +34,7 @@ public class Resender extends Thread {
 				isMsg = true;
 				msg = s;
 			} catch (Exception e) {
-				e.printStackTrace();
+				stop = true;
 			} 
 		}
 		
@@ -58,11 +61,15 @@ public class Resender extends Thread {
 		}
 	}
 	
+	/**
+	 * Пишем сообщение клиенту
+	 * @param message
+	 */
 	public void write(String message) {
 		try {
 			output.writeObject(message);
 		} catch (IOException e) {
-			e.printStackTrace();
+			stop = true;
 		}
 	}
 }
