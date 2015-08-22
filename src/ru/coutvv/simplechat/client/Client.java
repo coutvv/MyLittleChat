@@ -7,6 +7,8 @@ import java.net.Socket;
 import java.net.UnknownHostException;
 import java.util.Scanner;
 
+import ru.coutvv.simplechat.data.Message;
+
 
 public class Client {
 	
@@ -14,9 +16,15 @@ public class Client {
 	
 	ObjectOutputStream output;
 	
+	String ip = "localhost";
+	int port = 4040;
 	
+	String clientName = "Anon";
+	public void setClientName(String name) {
+		this.clientName = name;
+	}
 	public Client() throws UnknownHostException, IOException {
-		socket = new Socket("localhost", 4040);
+		socket = new Socket(ip, port);
 	}
 	
 	public void start() {
@@ -27,14 +35,19 @@ public class Client {
 
 			msgWriter = new Agent(new ObjectInputStream(socket.getInputStream())); 
 			msgWriter.start();
+			Message login = new Message(clientName, Message.TYPE_LOGIN, clientName);
+			output.writeObject(login);
 			
 			@SuppressWarnings("resource")
 			Scanner scan = new Scanner(System.in);
 			
 			while(true) {
 				String sendMsg = scan.nextLine();
-				output.writeObject(sendMsg);
+				Message msg = new Message(sendMsg, Message.TYPE_MESSAGE, clientName);
+				System.out.println("отправлено " + msg.getAuthor());
+				output.writeObject(msg);
 			}
+			
 		} catch (IOException e) {
 			e.printStackTrace();
 		} finally {
@@ -49,8 +62,16 @@ public class Client {
 	}
 	
 	public static void main(String[] args) {
+		@SuppressWarnings("resource")
+		Scanner scan = new Scanner(System.in);
+		
 		try {
 			Client cl = new Client();
+
+			System.out.println("Назовитесь:");
+			String name = scan.nextLine();
+			cl.setClientName(name);
+			
 			cl.start();
 		} catch (Exception e) {
 			e.printStackTrace();
