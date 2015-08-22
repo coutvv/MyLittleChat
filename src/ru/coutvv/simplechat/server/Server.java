@@ -25,7 +25,7 @@ public class Server {
 
 	
 	public void start() {
-		Resender msgWriter = null;
+		ClientConnection msgWriter = null;
 		try {
 			Broadcaster broadcaster = new Broadcaster();
 			broadcaster.start();
