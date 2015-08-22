@@ -24,7 +24,13 @@ public class Broadcaster extends Thread {
 					break;
 				}
 				if(client!= null && client.isNewMsg()){
-					broadcast(client.getMsg(), client);
+					Message msg = client.getMsg();
+					if(msg.getType() == Message.TYPE_LOGIN) {
+						client.setClientName(msg.getMsg());
+					} else if(msg.getType() == Message.TYPE_LOGOUT) {
+						client.stopIt();
+					}
+					broadcast(msg, client);
 				}
 			}
 		}
