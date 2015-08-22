@@ -20,7 +20,7 @@ public class Broadcaster extends Thread {
 		
 		while(true) {
 
-			Iterator it = clients.iterator();
+			Iterator<ClientConnection> it = clients.iterator();
 			while(it.hasNext()) {
 				ClientConnection client = (ClientConnection) it.next();
 				if(client!= null && client.isNewMsg()){
@@ -40,25 +40,6 @@ public class Broadcaster extends Thread {
 					break;
 				}
 			}
-//			for(ClientConnection client: clients) {
-//				
-//				if(client!= null && client.isNewMsg()){
-//					Message msg = client.getMsg();
-//					if(msg.getType() == Message.TYPE_LOGIN) {
-//						System.out.println("устанавливаем имя клиенту");
-//						client.setClientName(msg.getMsg());
-//					} else if(msg.getType() == Message.TYPE_LOGOUT) {
-//						client.stopIt();
-//					}
-//					System.out.println("ну тип отправляем всем посонам");
-//					broadcast(msg, client);
-//				}
-//				if(client!=null && client.isStop()) {
-//					System.out.println("Удаляем отключившегося клиента");
-//					clients.remove(client);
-//					break;
-//				}
-//			}
 		}
 	}
 	
