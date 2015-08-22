@@ -7,15 +7,17 @@ import java.net.Socket;
 import java.util.ArrayList;
 import java.util.List;
 
+import ru.coutvv.simplechat.data.Message;
+
 
 public class Broadcaster extends Thread {
 
-	private List<Resender> clients = new ArrayList<Resender>(); 
+	private List<ClientConnection> clients = new ArrayList<ClientConnection>(); 
 	
 	
 	public void run() {
 		while(true) {
-			for(Resender client: clients) {
+			for(ClientConnection client: clients) {
 				if(client!=null && client.isStop()) {
 					System.out.println("Удаляем отключившегося клиента");
 					clients.remove(client);
@@ -34,7 +36,7 @@ public class Broadcaster extends Thread {
 	 */
 	public void add(Socket s) {
 		try {
-			Resender client = new Resender(new ObjectInputStream(s.getInputStream()), new ObjectOutputStream(s.getOutputStream()));
+			ClientConnection client = new ClientConnection(new ObjectInputStream(s.getInputStream()), new ObjectOutputStream(s.getOutputStream()));
 			client.start();
 			clients.add(client);
 		} catch (IOException e) {
@@ -42,10 +44,10 @@ public class Broadcaster extends Thread {
 		}
 	}
 	
-	private void broadcast(String msg, Resender source) {
+	private void broadcast(Message msg, ClientConnection source) {
 		System.out.println("броаткастим от " + source.getId());
-		for(Resender client: clients) {
-			if(client != source) {
+		for(ClientConnection client: clients) {
+			if(client!= null && client != source) {
 				System.out.println("Пишем");
 				client.write(msg);
 			}
