@@ -18,7 +18,6 @@ public class Server {
 	
 	ServerSocket server;
 	ObjectOutputStream output;
-	ObjectInputStream input;
 	
 	public Server() throws IOException {
 		server = new ServerSocket(PORT);
@@ -33,16 +32,16 @@ public class Server {
 			Socket client = server.accept();
 			//берём потоки ввода вывода
 			output = new ObjectOutputStream(client.getOutputStream());
-			input = new ObjectInputStream(client.getInputStream());
+
+			System.out.println("Thats started");
 			
 			//Создаём новый поток, который в случае графоманства от клиента напишит в консольку 
-			msgWriter = new Resender(); 
+			msgWriter = new Resender(new ObjectInputStream(client.getInputStream())); 
 			msgWriter.start();
 			
 			//Сканируем консольку
 			@SuppressWarnings("resource")
 			Scanner scan = new Scanner(System.in);
-			System.out.println("Thats started");
 			while(true) {
 				String sendMsg = scan.nextLine();
 				output.writeObject(sendMsg); //отправляем сообщеньку			
@@ -54,7 +53,6 @@ public class Server {
 				msgWriter.stopIt();
 				server.close();
 				output.close();
-				input.close();
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
@@ -73,28 +71,4 @@ public class Server {
 		}
 	}
 	
-
-	/**
-	 * Класс пишущий в консоль то, что получает с клиента
-	 * @author Jane Dow
-	 *
-	 */
-	private class Resender extends Thread {
-		private boolean stop = false;
-		public void stopIt() {
-			stop = true;
-		}
-		
-		public void run() {
-			while(!stop){
-				try {
-					String s = (String) input.readObject();
-					System.out.println(s);
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-				
-			}
-		}
-	}
 }

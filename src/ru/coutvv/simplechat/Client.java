@@ -13,7 +13,6 @@ public class Client {
 	Socket socket; 
 	
 	ObjectOutputStream output;
-	ObjectInputStream input;
 	
 	
 	public Client() throws UnknownHostException, IOException {
@@ -24,23 +23,22 @@ public class Client {
 		Resender msgWriter = null;
 		try {
 
-			input = new ObjectInputStream(socket.getInputStream());
 			output = new ObjectOutputStream(socket.getOutputStream());
 
-			msgWriter = new Resender(); 
+			msgWriter = new Resender(new ObjectInputStream(socket.getInputStream())); 
 			msgWriter.start();
 			
 			@SuppressWarnings("resource")
 			Scanner scan = new Scanner(System.in);
+			
 			while(true) {
 				String sendMsg = scan.nextLine();
 				output.writeObject(sendMsg);			
 			}
-		} catch (Exception e) {
+		} catch (IOException e) {
 			e.printStackTrace();
 		} finally {
 			try {
-				input.close();
 				output.close();
 				msgWriter.stopIt();
 				socket.close();
@@ -60,27 +58,4 @@ public class Client {
 		
 	}
 	
-	/**
-	 * Печатыватель того что придёт из сокета
-	 * @author Jane Dow
-	 *
-	 */
-	private class Resender extends Thread {
-		private boolean stop = false;
-		public void stopIt() {
-			stop = true;
-		}
-		
-		public void run() {
-			while(!stop){
-				try {
-					String s = (String) input.readObject();
-					System.out.println(s);
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-				
-			}
-		}
-	}
 }
